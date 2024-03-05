@@ -79,11 +79,37 @@ we can ignore the `CMD` for the same reason above: the Compose file will handle 
 
 Finally, we get to the `compose.yml` file. It's yet another pretty basic file. The `build` context
 is the root of the repository (so we have access to everything) and it utilizes the first Dockerfile
-we discussed. We use `init: true` because we'll be using `npm run` which has some issues with Docker
-and Signals (TODO: point to a reference about this topic). Unfortunatley, we're using `nodemon` as well.
-It brings it's own problems with Signals. So `npm run` (problems with signals) + `nodemon` (problems with signals) equals
-a bit of a problem (a delay) when we want to stop Compose with `Ctrl-c`. I don't think `init: true` will
-actually help with these problems but it's easy enough to add and we can say "at least we tried."
+we discussed. 
+
+Speaking of `nodemon` you may have seen a real ugly `command` in our compose file. It's unfortunate, but
+we have to include all of our dependent workspace projects in the command or watch the entire project. Nodemon, to my knowledge, does not
+follow symlinks which is what we have in the `node_modules` for our workspace modules. If we
+watch the entire project, any time anything changes (related or not) it will restart our server. If that's okay with you, you can
+go that route. This second approach is commented out in the Compose file.
+
+<aside>
+I originally tried using `npm run dev --workspace=server` for the `command`. In the `package.json` of the server I created a `dev` script that looked like
+
+```json
+"dev": "nodemon index.js"
+```
+
+Unfortunatley, this would only watch the `apps/server` directory. Not the root's `node_modules` or any of the other workspace modules that are being relied on. You can, instead,
+do this
+
+```json
+"dev": "nodemon -w ../.. index.js"
+```
+
+Which get's us back to watching everything in our project. Or even
+
+```json
+"dev": "nodemon -w ../../packages/logger index.js"
+```
+
+And include all the packages that are required by server. I'm hoping to address this later and instead chose the more verbose `command` in `compose.yml` for now and
+I've commented this other approach out as well.
+</aside>
 
 If you remember the `EXPOSE 3000` we included in the second Dockerfile, the `ports` section should make sense.
 That's the port we'll also use on the host to access our server.
