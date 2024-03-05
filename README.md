@@ -22,6 +22,23 @@ that adds some of the mentioned complexity. There is a bunch of information out
 there about the benefits of Docker not only for development but also deployment. For now,
 let's just focus on development.
 
+## Phase 1 - Docker with npm Workspaces
+
+The goal of this phase is to just get a pleasant local development environment
+using `npm`, `npm` workspaces, and Docker. Other tools may be used but ultimatley we should
+avoid things like `turborepo` (even it would make things easier). A basic understanding
+without too much abstraction, that is what we are striving for.
+
+So what does a pleasant local development environment look like? For this basic example
+a simple node server (in a container) and a shared library. That's it. Two "apps". However,
+when the shared library is updated, the containerized node server should be updated. We will
+follow a few Docker best practices but the notion of production is not a concern yet. Things
+like ensuring the `node_modules` are not synced between the host and the docker containers -- they
+should be installed in the container and isolated. Typescript is usually a wise choice except
+it requires a build step. That will be addressed later.
+
+Let's begin.
+
 ## DRAFT
 
 Phase 1 - Docker with npm workspaces

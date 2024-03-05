@@ -1,0 +1,16 @@
+services:
+  
+  monorepo:
+    build:
+      context: .
+    init: true
+    command: npm run dev --workspace=server
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/monorepo
+      - not-used:/monorepo/node_modules
+
+volumes:
+  not-used:
+    
