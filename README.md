@@ -129,7 +129,27 @@ That's a good first step!
 
 ## Phase 2
 
-Let's add another server to our monorepo. With the setup we have in Phase 1, this shouldn't be too difficult.
+Let's add another server to our monorepo. With the setup we have in Phase 1, this shouldn't be too difficult. 
+
+We'll create another basic node server and copy over the `Dockerfile` from `server` (making sure to change the `COPY` command to this new service's directory). We'll also
+copy over the `package.json` from `server` (again, making sure to change names, etc.).
+
+For the root Dockerfile, we'll need to expose another port: `3001`. We'll also need to add `3001:3001` to our `compose.yml` so we can access this new server from
+the host.
+
+The next tricky bit is the `command`. When running multiple workspace scripts, `npm` will wait for the first command to complete before starting another. 
+That's a problem when we want to run two servers at the same time -- we don't want the first script to exit! So we'll utlize the `concurrently` library to help run 
+both at the same time.
+
+That wasn't so bad.
+
+## Phase 2.5
+
+Let's use some new Docker stuff.
+
+## Phase 3
+Okay, I can't stand the ugliness. Can `turborepo` help?
+
 
 ## DRAFT
 
