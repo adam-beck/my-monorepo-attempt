@@ -4,7 +4,7 @@ services:
     build:
       context: .
     init: true
-    command: ./node_modules/.bin/concurrently "npm run dev --workspace=server" "npm run dev --workspace=greet-service"
+    command: ./node_modules/.bin/concurrently "./node_modules/.bin/nodemon -w ./packages -w ./apps/server ./apps/server/index.js" "./node_modules/.bin/nodemon -w ./packages -w ./apps/greet-service ./apps/greet-service/index.js"
     ports:
       - "3000:3000"
       - "3001:3001"

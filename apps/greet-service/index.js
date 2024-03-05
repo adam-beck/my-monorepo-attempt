@@ -8,7 +8,7 @@ const logger = createLogger("GREET SERVICE");
 app.get("/greeting", (_req, res) => {
   logger.log("Request Received! Hello!");
   res.json({
-    hello: "world",
+    hello: "world!!!",
   });
 });
 
