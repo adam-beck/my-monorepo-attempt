@@ -4,7 +4,13 @@ services:
     build:
       context: .
     init: true
-    command: npm run dev --workspace=server
+    command: "./node_modules/.bin/nodemon -w packages/logger -w apps/server apps/server/index.js"
+      
+    # Uncomment and delete the above command to watch entire project for changes to restart
+    # command: "./node_modules/.bin/nodemon apps/server/index.js"
+
+    # Use the dev script
+    # command: npm run dev --workspace=server
     ports:
       - "3000:3000"
     volumes:
