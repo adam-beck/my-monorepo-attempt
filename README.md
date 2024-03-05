@@ -147,6 +147,35 @@ That wasn't so bad.
 
 Let's use some new Docker stuff.
 
+Docker Composed intorudced a new command: `watch` that does something similar to the
+bind mount we have for our source code. You can find more information [here](https://docs.docker.com/compose/file-watch/). You need to be
+aware that these changes to our compose file won't work with `docker compose up`. The command you want is
+`docker compose watch`. I haven't figured out how to get the logs without opening another terminal
+and running `docker compose logs -f`.
+
+We can remove the volume from our compose file and replace the `monorepo` service's volume
+information with
+
+```yml
+develop:
+    watch:
+    - action: sync
+      path: ./
+      target: /monorepo
+```
+One thing to mention is that this is a completely separate command. Just running `docker compose up`
+is not enough. You will need to launch another terminal and run `docker compose watch`. It does a rebuild
+by default which seems a little strange as the containers are already running but you can just append `--no-up` and
+it *won't* "build and start services before watching"
+
+Another thing we can do in this step is add `node_modules/.bin` to our path. That will
+clean up the `command` in the Compose file a little. We can add a very simple `dev.sh` script that runs this command. It won't
+do anything differently, but it will clean up our `compose.yml`. While we're in the Dockerfile we should probably also
+follow some better practices: being able to pass in `NODE_ENV` and also not use the `root` user.
+
+Let's keep this phase short. It's working. It's a little cleaner. But hopefully we can do a better with `turborepo`!
+
+
 ## Phase 3
 Okay, I can't stand the ugliness. Can `turborepo` help?
 

@@ -4,14 +4,12 @@ services:
     build:
       context: .
     init: true
-    command: ./node_modules/.bin/concurrently "./node_modules/.bin/nodemon -w ./packages -w ./apps/server ./apps/server/index.js" "./node_modules/.bin/nodemon -w ./packages -w ./apps/greet-service ./apps/greet-service/index.js"
+    command: ./dev.sh
     ports:
       - "3000:3000"
       - "3001:3001"
-    volumes:
-      - ./:/monorepo
-      - not-used:/monorepo/node_modules
-
-volumes:
-  not-used:
-    
+    develop:
+      watch:
+        - action: sync
+          path: ./
+          target: /monorepo
