@@ -4,12 +4,49 @@ services:
     build:
       context: .
     init: true
-    command: ./dev.sh
-    ports:
-      - "3000:3000"
-      - "3001:3001"
+    volumes:
+      - monorepo:/monorepo
+    command: []
     develop:
       watch:
         - action: sync
           path: ./
           target: /monorepo
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    depends_on:
+      - monorepo
+    init: true
+    ports:
+      - "3000:3000"
+    command: /monorepo/node_modules/.bin/nodemon -w /monorepo/packages -w /monorepo/apps/server /monorepo/apps/server/index.js
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/server
+          target: /monorepo/apps/server
+    volumes:
+      - monorepo:/monorepo
+        
+  greet-service:
+    depends_on:
+      - monorepo
+    build:
+      context: .
+      dockerfile: apps/greet-service/Dockerfile
+    init: true
+    ports:
+      - "3001:3000"
+    command: /monorepo/node_modules/.bin/nodemon -w /monorepo/packages -w /monorepo/apps/greet-service /monorepo/apps/greet-service/index.js
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/server
+          target: /monorepo/apps/server
+    volumes:
+      - monorepo:/monorepo
+
+volumes:
+  monorepo:
